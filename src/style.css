@@ -1,0 +1,599 @@
+body {
+  background: #0d1033;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+#app {
+  position: relative;
+/*   background: #782548; */
+  background: #3c1432;
+  color: #fff;
+  font-family: "Helvetica", "Arial", sans-serif;
+  margin: auto;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100vh;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: top;
+  font-size: 0.9rem;
+}
+
+.flexRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.flexRowStart {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;  
+}
+
+.flexCol {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+}
+
+.flexColCenter {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#titlePanel {
+  background: rgba(0, 0, 0, 0.35);
+  padding: 20px 0;
+  border-bottom: 1px solid #fff;
+}
+
+#mainPanel {
+  position: relative;
+  box-sizing: border-box;
+  padding: 6px;
+  flex-grow: 1;
+}
+
+#footer {
+  color: #eee;
+  width: 100%;
+  font-size: 12px;
+  background: rgba(0, 0, 0, 0.35);
+  box-sizing: border-box;
+  padding: 6px;
+  flex-shrink: 0;
+}
+
+#focusPanel {
+  margin-top: 25px;
+  position: relative;
+}
+
+#title {
+  font-size: 40px;
+  text-align: center;
+  margin: 0;
+}
+
+a {
+  color: #0adcff;
+}
+
+@media (max-width: 779px) {
+  #title {
+    font-size: 20px;
+  }
+
+  .control {
+    font-size: 15px;
+  }
+}
+
+.buttonBase {
+  background: none;
+  border: 1px solid #fff;
+  border-radius: 5px;
+  color: #fff;
+  min-height: 30px;
+  cursor: pointer;
+}
+
+.buttonBase.buttonDark {
+  color: #222;
+  border-color: #222;
+}
+
+.buttonEffects:hover {
+  background: #fff !important;
+  color: #111 !important;
+}
+
+.buttonEffects:active {
+  background: #aaa !important;
+  color: #111 !important;
+}
+
+.buttonEffects.buttonDark:hover {
+  background: #222 !important;
+  color: #fff !important;
+}
+
+.buttonEffects.buttonDark:active {
+  background: #555 !important;
+  color: #fff !important;
+}
+
+.buttonEffects:disabled {
+  color: #ddd !important;
+  border: 1px solid #ddd !important;
+  cursor: default !important;
+  filter: brightness(0.65) !important;
+}
+
+.buttonEffects:disabled:hover,
+.buttonEffects:disabled:active {
+  background: none !important;
+  color: #ddd !important;
+}
+
+#footerContent {
+  padding: 15px 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.footerBlock {
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+}
+
+.footerBlockInner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 40px;
+}
+
+/* me again */
+.hide {
+  visibility: hidden;
+  display: none;
+}
+
+.buttonFooter {
+  padding: 5px 10px;
+/*   margin-right: 10px; */
+}
+
+#sourceContainer {
+  margin-right: 15px;
+}
+
+#nextMessage {
+  font-style: italic;
+  font-size: 18px;
+  display: block;
+  position: relative;
+  top: 100%;
+}
+
+.flexRowCenter {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.fullPanel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 20;
+  color: #fff;
+}
+
+.overlayPanel {
+  background: #5c2865;
+}
+
+.verticalPanel {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.panelContent {
+  width: 95%;
+  display: flex;
+  flex-direction: column;
+  justify-content: top;
+  text-align: center;
+}
+
+.fullPanel h1 {
+  font-size: 40px;
+}
+
+#helpContent p {
+  font-size: 1.2em;
+  width: 55%;
+  margin: 10px auto;
+}
+
+#helpContent li {
+  width: 60%;
+  margin: 7px auto;
+  text-align: left;
+}
+
+.textDark {
+  color: #222;
+}
+
+.textDark a {
+  color: #0d1033;
+}
+
+hr {
+  width: 100%;
+  border-bottom: 1px solid white;
+}
+
+input[disabled=""] {
+  background: #cccccc;
+  color: #222222;
+  font-style: italic;
+}
+
+/** this app **/
+
+#focusPanel {
+  justify-content: space-around;
+}
+
+#itemsPanel, #parametersPanel {
+/*   flex-shrink: 1; */
+  border-right: 1px solid #fff;
+  height: 516px;
+}
+
+#itemsPanel {
+  width: 200px;
+}
+
+#parametersPanel {
+  width: 300px;
+}
+
+#groupsPanel {
+/*   flex-grow: 1; */
+  width: calc(100% - 450px);
+}
+
+#itemsPanel.hideSide, #parametersPanel.hideSide {
+  display: none;
+}
+
+#groupsPanel.hideSide {
+  width: 100%;
+}
+
+#groups {
+  max-height: 65vh;
+  overflow-y: scroll;
+}
+
+.flexCol h1, .flexCol h2, .flexCol h3, .flexCol h4, .flexCol h5, .flexCol h6 {
+  text-align: center;
+}
+
+.subPanel {
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+#items, #groupNames {
+  resize: none;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  box-sizing: border-box;
+  box-shadow: 5px 5px rgba(0, 0, 0, 0.25);
+}
+
+#items {
+/*   height: 35%; */
+  height: 178px;
+}
+
+#groupNames {
+/*   height: 20%; */
+  height: 95px;
+}
+
+#parameterFieldsets {
+  gap: 20px;
+}
+
+.parameterUnit {
+  width: 90%;
+  margin: 10px auto 15px auto;
+}
+
+#parameterFieldsets:last-child {
+  margin-bottom: 0;
+}
+
+.parameterUnit.flexRow {
+  justify-content: space-between;
+}
+
+.parameterUnit.flexCol {
+  gap: 15px;
+}
+
+.itemControls, .groupControls {
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.itemControls button, .groupControls button {
+  padding: 5px 10px;
+  font-size: 15px;
+}
+
+#groups {
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.group {
+  background: rgba(255,255, 255, 0.15);
+  padding: 25px 50px;
+  margin: 10px;
+  width: 100px;
+  border-radius: 10px;
+  box-shadow: 5px 5px rgba(0, 0, 0, 0.25);
+}
+
+.group h3 {
+  margin: 0 0 20px 0;
+}
+
+.groupItems {
+  gap: 10px;
+}
+
+.groupItem {
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 3px 3px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  padding: 5px;
+  text-align: center;
+  border-radius: 7px;
+}
+
+.groupItem:hover {
+  background: rgba(255, 255, 255, 0.95);
+  color: #222;
+}
+
+/* jquery options */
+.sliderHandle.ui-state-default {
+background: rgba(0, 0, 0, .75);
+  background: #3c1432;
+  color: #fff;
+/*   padding: 0 2px; */
+  box-sizing: border-box;
+  text-align: center;
+  top: -8px;
+  border-radius: 5px;
+  border: 1px solid #fff;
+  
+}
+
+.sliderHandle.ui-state-hover, .sliderHandle.ui-state-active {
+  background: #fff;
+  color: #222;
+  cursor: pointer;
+}
+
+.ui-slider.ui-widget-content {
+  height: 1px;
+  top: 2px;
+}
+
+.ui-slider {
+  margin: auto;
+  margin-bottom: 5px;
+/*   width: 90%; */
+  width: 92%;
+}
+
+#focusPanel h2 {
+  margin-top: 0;
+}
+
+.parameterLabel, .parameterReport {
+  text-align: center;
+  width: 100%;
+}
+
+.parameterLabel {
+  font-weight: 600;
+  gap: 5px;
+/*   margin-left: 3px; */
+  justify-content: center;
+}
+
+.parameterReport {
+  padding: .5px 4.5px;
+  border-radius: 5px;
+/*   background: #fff;
+  color: #222; */
+  background: none;
+  color: #fff;
+  border: 1px solid #fff;
+  font-family: Arial,Helvetica,sans-serif;
+  font-size: .85rem;
+  font-weight: 400;
+  width: 7px;
+}
+
+#noItemsNotice {
+  width: 50%;
+  height: 240px;
+  padding: 20px;
+  text-align: center;  
+  justify-content: center;
+}
+
+#noItemsNotice h3 {
+  margin: 0;
+}
+
+.fieldsetRadio {
+  gap: 5px;
+}
+
+.fieldsetRadioSub {
+  width: 100%;
+}
+
+.smallHeading {
+  font-size: 15px;
+  font-weight: 400;
+}
+
+/* radio buttons */
+
+.ui-checkboxradio-label {
+  width: 100%;
+  font-size: 0.9em;
+  padding: 5px;
+  box-sizing: border-box;
+  border: 1px solid rgba(0, 0, 0, 0); /* lol */
+/*   border: 1px solid #fff; */
+  background: none;
+  color: #fff;
+  text-align: left;
+}
+
+.ui-checkboxradio-checked, .ui-checkboxradio-checked.ui-state-active:hover {
+  background: rgba(255, 255, 255, 1);
+  color: #222;
+}
+
+.ui-checkboxradio-label:hover {
+  background: #fff;
+  color: #222;
+}
+
+.ui-checkboxradio-label .ui-icon {
+/*   background: none; */
+  border: none !important;
+}
+
+/* .ui-state-active .ui-icon-background {
+  background: #fff;
+  border: 1px solid #222;
+} */
+
+.ui-button .ui-icon {
+  background: #fff;
+  box-shadow: none;
+/*   border: 1px solid #fff; */
+  width: 10px !important;
+  height: 10px !important;
+}
+
+.ui-checkboxradio-label:hover .ui-icon {
+  background: #fff;
+  border: 1px solid #222 !important;
+  box-sizing: border-box;
+}
+
+.ui-state-active .ui-icon, .ui-state-active:hover .ui-icon {
+  background: #222;
+/*   border: 1px solid #222 !important;
+  box-sizing: border-box; */
+}
+
+/* share */
+
+.footerBlock {
+  gap: 15px;
+}
+
+.sharePanel {  
+/*   background: rgba(255, 255, 255, 0.075); */
+  padding: 20px 0 15px 0;
+  box-sizing: border-box;
+  margin-top: -5px;
+}
+
+#shareSubpanel {
+  gap: 10px;
+}
+
+#shareSubSubpanel {
+  gap: 10px;
+  border-bottom: 1px solid #fff;
+  border-radius: 0 0 9px 0;
+}
+
+.shareInput {
+  border: none;
+  
+  width: 75px;
+  font-size: 0.5rem;
+  
+  
+  background: rgba(255, 255, 255, 0.55);
+  color: rgba(0, 0, 0, 0.85);
+/*   border-bottom: 1px solid rgba(255, 255, 255, 0.5); */
+  height: 20px;
+  border-radius: 3px;
+  padding: 0 10px;
+}
+
+.footerOptionLabel {
+  height: 30px;
+  padding-top: 8px;
+}
+
+#copyPingNotification {
+  font-style: italic;
+  padding: 10px;
+  pointer-events: none;
+  width: 75px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+#copyPingNotification.pinged {
+  background: rgba(255,255,255, 0.5);
+  color: rgba(255, 255, 255, 1);
+}
+
+#copyPingNotification:not(.pinged) {
+  background: rgba(255,255,255, 0);
+  color: rgba(255, 255, 255, 0);
+}
+
+.fade {
+  transition-duration: 1s;
+  transition-timing-function: linear;
+}
