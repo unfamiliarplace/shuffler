@@ -1,5 +1,5 @@
 // hmm hmm
-const baseURL = "https://t.sawczak.com/shuffler";
+const baseURL = "https://t.sawczak.com/sh";
 
 const defaultItems = [
   'Example',
