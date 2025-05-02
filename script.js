@@ -174,7 +174,7 @@ const updateButtonStates = () => {
   $("#transformGroupsJigsaw").prop("disabled", true);
   $("#undoGroupChange").prop("disabled", true);
   $("#redoGroupChange").prop("disabled", true);
-  
+
   // Options
   app.optShareItems.disable(n === 0);
   app.optShareGroupNames.disable(ng === 0);
@@ -232,10 +232,10 @@ const makeGroups = (items) => {
   updateShareURL();
 };
 
-const makePremadeGroups = (groups) => {  
+const makePremadeGroups = (groups) => {
   app.groups = groups;
   app.groupsPopulated = true;
-  
+
   displayGroups();
   makeSortables();
   updateButtonStates();
@@ -314,7 +314,7 @@ const applyGroupNamesToHTML = () => {
 
 const createGroupHTML = () => {
   let outer = [];
-  let group, inners, groupName;
+  let group, inners, item;
 
   if (app.groups.length === 0) {
     return formatNoItemsNotice();
@@ -323,13 +323,14 @@ const createGroupHTML = () => {
       group = app.groups[i];
       inners = [];
       if (group.length > 0) {
-        for (let item of group) {
-          inners.push(`<div class='groupItem'>${item}</div>`);
+        for (let j = 0; j < group.length; j++) {
+          item = group[j];
+          inners.push(`<div class='groupItem' data-item-name="${item}" data-item="${j}" data-group="${i}" id="item-${i}-${j}">${item}</div>`);
         }
       }
 
       outer.push(
-        `<div class='group flexCol' id="group-${i}"><h3 class="groupName"></h3><div class='groupItems flexCol'>${inners.join(
+        `<div class='group flexCol' data-group="${i}" id="group-${i}"><h3 class="groupName"></h3><div class='groupItems flexCol' data-group="${i}" id="groupItems-${i}">${inners.join(
           ""
         )}</div></div>`
       );
@@ -392,23 +393,34 @@ const sortItemsZA = () => {
 };
 
 const handleDrop = (evt) => {
-  console.log(evt.item);
-  console.log(evt.to);
-  console.log(evt.from);
+
+  // Receate the drop in the app groups model
+  // for the purpose of shareURL etc.
+  // Swap triggers this function twice
+
+  let iGroupOrig = parseInt($(evt.from).attr('data-group'));
+  let iGroupDest = parseInt($(evt.to).attr('data-group'));
+  let iItemOrig = evt.oldIndex;
+  let iItemDest = evt.newIndex;
+
+  let item = app.groups[iGroupOrig][iItemOrig];
+  app.groups[iGroupOrig].splice(iItemOrig, 1);
+  app.groups[iGroupDest].splice(iItemDest, 0, item);
+
   updateShareURL();
 }
 
 const handleToggleShowSide = () => {
   if (app.optShowSide.value()) {
     $('#itemsPanel').removeClass('hideSide');
-    $('#parametersPanel').removeClass('hideSide');    
+    $('#parametersPanel').removeClass('hideSide');
     $('#groupsPanel').removeClass('hideSide');
   } else {
     $('#itemsPanel').addClass('hideSide');
-    $('#parametersPanel').addClass('hideSide');    
+    $('#parametersPanel').addClass('hideSide');
     $('#groupsPanel').addClass('hideSide');
   }
-  
+
   updateShareURL();
 }
 
@@ -447,7 +459,7 @@ setOptionDefaults();
 
 const bind = () => {
   $(document).keyup(handleKeyup);
-  
+
   $('#reset').click(reset);
 
   $("#clearItems").click(clearItems);
@@ -482,7 +494,7 @@ const bind = () => {
   app.optShareGroupNames.change(updateShareURL);
   app.optShareParameters.change(updateShareURL);
   app.optShareGroups.change(updateShareURL);
-  
+
   app.optShowSide.change(handleToggleShowSide);
 };
 
@@ -496,14 +508,14 @@ const createOptions = () => {
   app.optShareGroupNames = new OptionCheckbox($("#shareGroupNames"));
   app.optShareParameters = new OptionCheckbox($("#shareParameters"));
   app.optShareGroups = new OptionCheckbox($("#shareGroups"));
-  
+
   app.optShowSide = new OptionCheckbox($("#showSide"));
 };
 
 const setOptionDefaults = () => {
   setItems(defaultItems);
   setGroupNames(defaultGroupNames);
-  
+
   app.optNGroups.value(3);
   app.optNPerGroup.value(2);
   app.optBalanceLeftovers.value("leftoversDistribute");
@@ -513,7 +525,7 @@ const setOptionDefaults = () => {
   app.optShareGroupNames.value(false);
   app.optShareParameters.value(false);
   app.optShareGroups.value(false);
-  
+
   app.optShowSide.value(true);
 };
 
@@ -537,10 +549,10 @@ const packShareData = () => {
     d["n"] = app.optNGroups.value();
 
     d["o"] = "";
-    
+
     // 0 = default, 1 = alternative
     // TODO could perhaps map this (in which case it could be used for unpacking too)
-    
+
     d["o"] += Tools.boolToInt(
       app.optBalanceLeftovers.value() !== "leftoversDistribute"
     );
@@ -555,7 +567,7 @@ const packShareData = () => {
   if ((!app.optShareGroups.isDisabled()) && app.optShareGroups.value()) {
     let items = getItems();
     let groups = [];
-    
+
     let group;
     for (let g of app.groups) {
       group = [];
@@ -572,39 +584,39 @@ const packShareData = () => {
 };
 
 const unpackShareData = d => {
-  
+
   if ('i' in d) {
     app.optShareItems.value(true);
     setItems(d['i'].split('_'));
   }
-  
+
   if ('a' in d) {
     app.optShareGroupNames.value(true);
     setGroupNames(d['a'].split('_'));
   }
-  
+
   if ('n' in d) {
     app.optShareParameters.value(true);
     app.optNGroups.value(parseInt(d['n']));
     handleNGroupsUpdate();
   }
-  
+
   if ('o' in d) {
     app.optShareParameters.value(true);
-    
+
     // TODO map?
     if (d['o'][0] === '0') {
       app.optBalanceLeftovers.value('leftoversDistribute');
     } else if (d['o'][0] === '1') {
       app.optBalanceLeftovers.value('leftoversCollect');
     }
-    
+
         if (d['o'][1] === '0') {
       app.optDraggingBehaviour.value('draggingMove');
     } else if (d['o'][1] === '1') {
       app.optDraggingBehaviour.value('draggingSwap');
     }
-    
+
         if (d['o'][2] === '0') {
       app.optShowSide.value(false);
     } else if (d['o'][2] === '1') {
@@ -612,14 +624,14 @@ const unpackShareData = d => {
     }
     handleToggleShowSide();
   }
-  
+
   if ('g' in d) {
     app.optShareGroups.value(true);
-    
+
     let items = getItems();
     let groups = [];
     let group;
-    
+
     for (let g of d['g'].split('_')) {
       group = [];
       for (let i of g.split('-')) {
@@ -627,11 +639,11 @@ const unpackShareData = d => {
       }
       groups.push(group);
     }
-    
+
     app.optNGroups.value(groups.size);
     handleNGroupsUpdate();
-    makePremadeGroups(groups); 
-  }  
+    makePremadeGroups(groups);
+  }
 };
 
 const shareDataIsDefault = () => {
@@ -652,7 +664,6 @@ const shareDataIsDefault = () => {
 };
 
 const updateShareURL = () => {
-  console.log(sLinkIO.updateShareURL());
   $("#shareURL").val(sLinkIO.updateShareURL());
 };
 
@@ -670,7 +681,7 @@ const initialize = () => {
   createOptions();
   bind();
   setOptionDefaults();
-  
+
   reset();
 
   sLinkIO.createCopyShareURLButton(
@@ -682,13 +693,13 @@ const initialize = () => {
     "Copy",
     "Copy share URL"
   );
-  
+
   // Doesn't seem to do anything with input
   // sLinkIO.bindCopyShareURLButton(
   // 'shareInput',
   //   'copyPingNotification'
   // );
-  
+
   handleItemsUpdate();
 
   sLinkIO.readURL();
@@ -704,7 +715,7 @@ class App {
   optShareGroupNames;
   optShareParameters;
   optShareGroups;
-  
+
   optShowSide;
 
   groups;
@@ -721,7 +732,7 @@ class App {
     this.optShareGroupNames = null;
     this.optShareParameters = null;
     this.optShareGroups = null;
-    
+
     this.optShowSide = null;
 
     this.groups = [];
