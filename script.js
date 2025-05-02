@@ -391,9 +391,10 @@ const sortItemsZA = () => {
   setItems(items);
 };
 
-const handleDrop = () => {
-  // TODO need to update app internal group state
-  // by reading what was done
+const handleDrop = (evt) => {
+  console.log(evt.item);
+  console.log(evt.to);
+  console.log(evt.from);
   updateShareURL();
 }
 
@@ -634,20 +635,23 @@ const unpackShareData = d => {
 };
 
 const shareDataIsDefault = () => {
-  return [
+  let paramsAreDefault = [
     app.optNGroups.value() === 3,
     app.optNPerGroup.value() === 2,
     app.optBalanceLeftovers.value() === 'leftoversDistribute',
     app.optDraggingBehaviour.value() === 'draggingMove',
-    app.optShowSide.value(),
-    JSON.stringify(getItems()) === JSON.stringify(defaultItems),
-    JSON.stringify(getGroupNames()) === JSON.stringify(defaultGroupNames),
-      ! app.groupsPopulated
+    app.optShowSide.value()
+  ].every(Boolean);
+
+  return [
+    (! app.optShareParameters.value() || paramsAreDefault),
+    (! app.optShareItems.value() || (JSON.stringify(getItems()) === JSON.stringify(defaultItems))),
+    (! app.optShareGroupNames.value() || (JSON.stringify(getGroupNames()) === JSON.stringify(defaultGroupNames))),
+    (! app.optShareGroups.value() || (! app.groupsPopulated))
   ].every(Boolean);
 };
 
 const updateShareURL = () => {
-  console.log('updating share URL');
   console.log(sLinkIO.updateShareURL());
   $("#shareURL").val(sLinkIO.updateShareURL());
 };
@@ -698,7 +702,7 @@ class App {
 
   optShareItems;
   optShareGroupNames;
-  optShareParamaters;
+  optShareParameters;
   optShareGroups;
   
   optShowSide;
@@ -715,7 +719,7 @@ class App {
 
     this.optShareItems = null;
     this.optShareGroupNames = null;
-    this.optShareParamaters = null;
+    this.optShareParameters = null;
     this.optShareGroups = null;
     
     this.optShowSide = null;
