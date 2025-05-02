@@ -18,7 +18,7 @@ body {
   border-radius: 15px;
   display: flex;
   flex-direction: column;
-  justify-content: top;
+  justify-content: start;
   font-size: 0.9rem;
 }
 
@@ -57,6 +57,8 @@ body {
   box-sizing: border-box;
   padding: 6px;
   flex-grow: 1;
+
+  overflow-y: scroll;
 }
 
 #footer {
@@ -67,11 +69,13 @@ body {
   box-sizing: border-box;
   padding: 6px;
   flex-shrink: 0;
+  z-index: 2;
 }
 
 #focusPanel {
   margin-top: 25px;
   position: relative;
+  overflow-y: scroll;
 }
 
 #title {
@@ -215,7 +219,7 @@ a {
   width: 95%;
   display: flex;
   flex-direction: column;
-  justify-content: top;
+  justify-content: start;
   text-align: center;
 }
 
@@ -264,6 +268,7 @@ input[disabled=""] {
 /*   flex-shrink: 1; */
   border-right: 1px solid #fff;
   height: 516px;
+  overflow-y: scroll;
 }
 
 #itemsPanel {
