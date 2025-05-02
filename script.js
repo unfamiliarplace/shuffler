@@ -271,7 +271,8 @@ const makeSortables = () => {
         swapThreshold: 1,
         animation: 50,
         group: "groups",
-        swap: swap
+        swap: swap,
+        onEnd: handleDrop
       })
     );
   }
@@ -387,6 +388,10 @@ const sortItemsZA = () => {
   items.reverse();
   setItems(items);
 };
+
+const handleDrop = () => {
+  updateShareURL();
+}
 
 const handleToggleShowSide = () => {
   if (app.optShowSide.value()) {
