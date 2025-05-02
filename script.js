@@ -229,6 +229,7 @@ const makeGroups = (items) => {
   displayGroups();
   makeSortables();
   updateButtonStates();
+  updateShareURL();
 };
 
 const makePremadeGroups = (groups) => {  
@@ -238,6 +239,7 @@ const makePremadeGroups = (groups) => {
   displayGroups();
   makeSortables();
   updateButtonStates();
+  updateShareURL();
 }
 
 const makeGroupsShuffled = () => {
@@ -390,6 +392,8 @@ const sortItemsZA = () => {
 };
 
 const handleDrop = () => {
+  // TODO need to update app internal group state
+  // by reading what was done
   updateShareURL();
 }
 
@@ -480,8 +484,6 @@ const bind = () => {
   
   app.optShowSide.change(handleToggleShowSide);
 };
-
-const place = () => {};
 
 const createOptions = () => {
   app.optNGroups = new OptionSlider($("#optNGroups"));
@@ -638,12 +640,15 @@ const shareDataIsDefault = () => {
     app.optBalanceLeftovers.value() === 'leftoversDistribute',
     app.optDraggingBehaviour.value() === 'draggingMove',
     app.optShowSide.value(),
-    JSON.stringify(getItems()) == JSON.stringify(defaultItems),
-    JSON.stringify(getGroupNames()) == JSON.stringify(defaultGroupNames)
+    JSON.stringify(getItems()) === JSON.stringify(defaultItems),
+    JSON.stringify(getGroupNames()) === JSON.stringify(defaultGroupNames),
+      ! app.groupsPopulated
   ].every(Boolean);
 };
 
 const updateShareURL = () => {
+  console.log('updating share URL');
+  console.log(sLinkIO.updateShareURL());
   $("#shareURL").val(sLinkIO.updateShareURL());
 };
 
