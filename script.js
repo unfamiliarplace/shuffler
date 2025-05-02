@@ -628,15 +628,23 @@ const unpackShareData = d => {
   if ('g' in d) {
     app.optShareGroups.value(true);
 
-    let items = getItems();
+    let itemNames = getItems();
     let groups = [];
     let group;
+    let itemIndices;
 
     for (let g of d['g'].split('_')) {
       group = [];
-      for (let i of g.split('-')) {
-        group.push(items[parseInt(i)]);
+
+      // User could technically swap everyone out of a group,
+      // in which case the for loop would yield undefined
+      itemIndices = g.split('-');
+      if (itemIndices.length > 0) {
+        for (let i of itemIndices) {
+          group.push(itemNames[parseInt(i)]);
+        }
       }
+
       groups.push(group);
     }
 
