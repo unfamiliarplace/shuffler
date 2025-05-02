@@ -75,7 +75,7 @@ body {
 #focusPanel {
   margin-top: 25px;
   position: relative;
-  overflow-y: scroll;
+  /*overflow-y: scroll;*/
 }
 
 #title {
@@ -601,4 +601,13 @@ background: rgba(0, 0, 0, .75);
 .fade {
   transition-duration: 1s;
   transition-timing-function: linear;
+}
+
+.hideScrollbar {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.hideScrollbar::-webkit-scrollbar {
+  display: none;  /* Safari and Chrome */
 }
