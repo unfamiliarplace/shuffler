@@ -454,7 +454,8 @@ background: rgba(0, 0, 0, .75);
   font-family: Arial,Helvetica,sans-serif;
   font-size: .85rem;
   font-weight: 400;
-  width: 7px;
+  min-width: 7px;
+  max-width: 14px;
 }
 
 #noItemsNotice {
