@@ -394,6 +394,9 @@ const sortItemsZA = () => {
 
 const handleDrop = (evt) => {
 
+  // TODO swapping apparently when sharing left one group w/ undefined
+  // and the other with two in it
+
   // Receate the drop in the app groups model
   // for the purpose of shareURL etc.
   // Swap triggers this function twice
