@@ -12,32 +12,21 @@ const defaultItems = [
 
 const defaultGroupNames = [];
 
-const stage = new _Stage();
-
-const addScenes = () => {
-  stage.addScene(
-    new _Scene("game", "#gamePanel", "", [$("#gamePanel button")])
-  );
-  stage.addScene(new _Scene("help", "#helpPanel", "#btnHelp", []));
-
-  stage.setDefault("game");
-};
-
 const getItems = () => {
-  return Tools.getTextareaLines($("#items"));
+  return DOMTools.getTextareaLines($("#items"));
 };
 
 const getGroupNames = () => {
-  return Tools.getTextareaLines($("#groupNames"));
+  return DOMTools.getTextareaLines($("#groupNames"));
 };
 
 const setItems = (items) => {
-  Tools.setTextareaLines($("#items"), items);
+  DOMTools.setTextareaLines($("#items"), items);
   handleItemsUpdate();
 };
 
 const setGroupNames = (items) => {
-  Tools.setTextareaLines($("#groupNames"), items);
+  DOMTools.setTextareaLines($("#groupNames"), items);
   handleGroupNamesUpdate();
 };
 
@@ -243,7 +232,7 @@ const makePremadeGroups = (groups) => {
 }
 
 const makeGroupsShuffled = () => {
-  makeGroups(Tools.shuffle(getItems()));
+  makeGroups(Random.shuffle(getItems()));
 };
 
 const makeGroupsOrdered = () => {
@@ -372,11 +361,11 @@ const placeInGroups = (items) => {
 };
 
 const sortGroupNamesRandom = () => {
-  setGroupNames(Tools.shuffle(getGroupNames()));
+  setGroupNames(Random.shuffle(getGroupNames()));
 };
 
 const sortItemsRandom = () => {
-  setItems(Tools.shuffle(getItems()));
+  setItems(Random.shuffle(getItems()));
 };
 
 const sortItemsAZ = () => {
@@ -556,13 +545,13 @@ const packShareData = () => {
     // 0 = default, 1 = alternative
     // TODO could perhaps map this (in which case it could be used for unpacking too)
 
-    d["o"] += Tools.boolToInt(
+    d["o"] += JSTools.boolToInt(
       app.optBalanceLeftovers.value() !== "leftoversDistribute"
     );
-    d["o"] += Tools.boolToInt(
+    d["o"] += JSTools.boolToInt(
       app.optDraggingBehaviour.value() !== "draggingMove"
     );
-    d["o"] += Tools.boolToInt(
+    d["o"] += JSTools.boolToInt(
       app.optShowSide.value()
     );
   }
@@ -686,7 +675,14 @@ const sLinkIO = new LinkIO(
 );
 
 const initialize = () => {
-  addScenes();
+  app = new App();
+
+  stage = new Stage();
+  stage.createScenes([
+    {name: "game", panelSelector: "#gamePanel"},
+    {name: "help", panelSelector: "#helpPanel", toggleSelector: "#btnHelp"}
+  ]);
+  stage.setDefault("game");
   stage.show("game");
 
   createOptions();
@@ -752,5 +748,6 @@ class App {
   }
 }
 
-const app = new App();
+var stage;
+var app;
 $(document).ready(initialize);
