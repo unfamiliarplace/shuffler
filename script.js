@@ -41,7 +41,6 @@ const shouldDraggingSwap = () => {
 // TODO precisely the kind of thing that should be non-destructive
 const handleBalanceLeftoversUpdate = () => {
   clearGroups();
-  updateShareURL();
 };
 
 const handleDraggingBehaviourUpdate = () => {
@@ -69,7 +68,6 @@ const handleNGroupsUpdate = () => {
   app.optNPerGroup.value(Math.max(1, Math.floor(n / v)));
   $("#reportNLeftovers").html(n % v);
   clearGroups();
-  updateShareURL();
 };
 
 const handleNPerGroupUpdate = () => {
@@ -78,7 +76,6 @@ const handleNPerGroupUpdate = () => {
   app.optNGroups.value(Math.max(1, Math.floor(n / v)));
   $("#reportNLeftovers").html(n % v);
   clearGroups();
-  updateShareURL();
 };
 
 const handleGroupNamesUpdate = () => {
@@ -133,8 +130,6 @@ const handleItemsUpdate = () => {
   $("#reportNLeftovers").html(nLeftovers);
 
   clearGroups();
-  updateButtonStates();
-  updateShareURL();
 };
 
 const updateButtonStates = () => {
@@ -210,6 +205,7 @@ const clearGroups = () => {
   makeBaseGroups();
   displayGroups();
   updateButtonStates();
+  updateShareURL();
 };
 
 const makeGroups = (items) => {
@@ -446,7 +442,6 @@ const removeDoubleItems = () => {
 const reset = () => {
 setOptionDefaults();
   clearGroups();
-  updateShareURL();
 };
 
 const bind = () => {
@@ -652,10 +647,11 @@ const shareDataIsDefault = () => {
     app.optNPerGroup.value() === 2,
     app.optBalanceLeftovers.value() === 'leftoversDistribute',
     app.optDraggingBehaviour.value() === 'draggingMove',
-    app.optShowSide.value()
+    app.optShowSide.value(),
   ].every(Boolean);
 
   return [
+    app.groups.every(g => g.length === 0),
     (! app.optShareParameters.value() || paramsAreDefault),
     (! app.optShareItems.value() || (JSON.stringify(getItems()) === JSON.stringify(defaultItems))),
     (! app.optShareGroupNames.value() || (JSON.stringify(getGroupNames()) === JSON.stringify(defaultGroupNames))),
@@ -665,6 +661,8 @@ const shareDataIsDefault = () => {
 
 const updateShareURL = () => {
   $("#shareURL").val(sLinkIO.updateShareURL());
+  // debug
+  console.log(sLinkIO.updateShareURL());
 };
 
 const sLinkIO = new LinkIO(
