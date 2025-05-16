@@ -377,24 +377,21 @@ const sortItemsZA = () => {
   setItems(items);
 };
 
+/**
+ * Read the HTML to find out the new group state.
+ * This event is only fired once, even with swaps, so it's insufficient to use evt properties.
+ * @param evt
+ */
 const handleDrop = (evt) => {
-
-  // TODO swapping apparently when sharing left one group w/ undefined
-  // and the other with two in it
-
-  // Receate the drop in the app groups model
-  // for the purpose of shareURL etc.
-  // Swap triggers this function twice
-
-  let iGroupOrig = parseInt($(evt.from).attr('data-group'));
-  let iGroupDest = parseInt($(evt.to).attr('data-group'));
-  let iItemOrig = evt.oldIndex;
-  let iItemDest = evt.newIndex;
-
-  let item = app.groups[iGroupOrig][iItemOrig];
-  app.groups[iGroupOrig].splice(iItemOrig, 1);
-  app.groups[iGroupDest].splice(iItemDest, 0, item);
-
+  app.groups = [];
+  let group;
+  for (const elGroup of $('.group')) {
+    group = [];
+    for (const elItem of $(elGroup).find('.groupItem')) {
+      group.push($(elItem).attr('data-item-name'));
+    }
+    app.groups.push(group);
+  }
   updateShareURL();
 }
 
@@ -662,7 +659,9 @@ const shareDataIsDefault = () => {
 const updateShareURL = () => {
   $("#shareURL").val(sLinkIO.updateShareURL());
   // debug
-  console.log(sLinkIO.updateShareURL());
+  if (!shareDataIsDefault()) {
+    console.log(sLinkIO.shareURL);
+  }
 };
 
 const sLinkIO = new LinkIO(
