@@ -436,6 +436,10 @@ const removeDoubleItems = () => {
   setItems(getUniqueItems());
 };
 
+const copyShareURL = () => {
+  copyToast = Copy.toast(copyToast, lio.shareURL, 'Copied share URL!');
+};
+
 const reset = () => {
 setOptionDefaults();
   clearGroups();
@@ -462,6 +466,8 @@ const bind = () => {
   $("#makeGroupsZA").click(makeGroupsZA);
 
   $("#clearGroups").click(clearGroups);
+
+  $("#btnCopyShareURL").click(copyShareURL);
 
   app.optNGroups.slide((e, ui) => {
     handleNGroupsSlide(parseInt(ui.value));
@@ -518,8 +524,8 @@ const setOptionDefaults = () => {
 const packShareData = () => {
   let d = {};
 
-  // d['i'] = slinkIO.compress(getItems().join('_'));
-  // d['a'] = slinkIO.compress(getGroupNames().join('_'));
+  // d['i'] = lio.compress(getItems().join('_'));
+  // d['a'] = lio.compress(getGroupNames().join('_'));
 
   if ((!app.optShareItems.isDisabled()) && app.optShareItems.value()) {
     d["i"] = getItems().join("_");
@@ -657,14 +663,14 @@ const shareDataIsDefault = () => {
 };
 
 const updateShareURL = () => {
-  $("#shareURL").val(sLinkIO.updateShareURL());
+  $("#shareURL").val(lio.updateShareURL());
   // debug
   if (!shareDataIsDefault()) {
-    console.log(sLinkIO.shareURL);
+    console.log(lio.shareURL);
   }
 };
 
-const sLinkIO = new LinkIO(
+const lio = new LinkIO(
   baseURL,
   packShareData,
   unpackShareData,
@@ -688,25 +694,9 @@ const initialize = () => {
 
   reset();
 
-  sLinkIO.createCopyShareURLButton(
-    $("#shareButtonContainer"),
-    "share",
-    "copyPingNotification",
-    "",
-    "buttonBase buttonEffects buttonFooter",
-    "Copy",
-    "Copy share URL"
-  );
-
-  // Doesn't seem to do anything with input
-  // sLinkIO.bindCopyShareURLButton(
-  // 'shareInput',
-  //   'copyPingNotification'
-  // );
-
   handleItemsUpdate();
 
-  sLinkIO.readURL();
+  lio.readURL();
 };
 
 class App {
@@ -745,6 +735,7 @@ class App {
   }
 }
 
+let copyToast;
 var stage;
 var app;
 $(document).ready(initialize);

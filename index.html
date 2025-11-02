@@ -11,6 +11,7 @@
 
     <link rel='stylesheet' href='https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css'>
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css'>
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.css'>
     <link rel="stylesheet" href="./style.css">
 
 </head>
@@ -24,42 +25,68 @@
             </div>
             <div id='focusPanel' class='flexRow'>
                 <div id='itemsPanel' class='flexCol subPanel hideScrollbar'>
-                    <h2>Items</h2>
-                    <div id='itemControls1' class='itemControls flexRow'>
-                        <button id='clearItems' class='buttonBase buttonEffects' title="Clear items"><i
-                                class="fa-solid fa-trash"></i></button>
-                        <button id='removeDoubleItems' class='buttonBase buttonEffects' title="Remove duplicate items">
-                            <i class="fa-solid fa-users"></i> → <i class="fa-solid fa-user"></i></button>
-                    </div>
-                    <div id='itemsControls2' class='itemControls flexRow'>
-                        <button id='sortItemsRandom' class='buttonBase buttonEffects' title="Randomize item order"><i
-                                class="fa-solid fa-dice"></i></button>
-                        <button id='sortItemsAZ' class='buttonBase buttonEffects' title="Sort items alphabetically">AZ
-                        </button>
-                        <button id='sortItemsZA' class='buttonBase buttonEffects'
-                                title="Sort items alphabetically in reverse">ZA
-                        </button>
-                    </div>
+                    <h2>General settings</h2>
+                    <div class='fieldsetColumn flexCol'>
+                        <fieldset id="fsItems" class="flexCol">
+                            <legend>Items</legend>
+                            <div id='itemControls1' class='itemControls flexRow'>
+                                <button id='clearItems' class='buttonBase buttonEffects' title="Clear items"><i
+                                        class="fa-solid fa-trash"></i></button>
+                                <button id='removeDoubleItems' class='buttonBase buttonEffects'
+                                        title="Remove duplicate items">
+                                    <i class="fa-solid fa-users"></i> → <i class="fa-solid fa-user"></i></button>
+                            </div>
+                            <div id='itemsControls2' class='itemControls flexRow'>
+                                <button id='sortItemsRandom' class='buttonBase buttonEffects'
+                                        title="Randomize item order"><i
+                                        class="fa-solid fa-dice"></i></button>
+                                <button id='sortItemsAZ' class='buttonBase buttonEffects'
+                                        title="Sort items alphabetically">AZ
+                                </button>
+                                <button id='sortItemsZA' class='buttonBase buttonEffects'
+                                        title="Sort items alphabetically in reverse">ZA
+                                </button>
+                            </div>
+                            <textarea id='items'></textarea>
+                        </fieldset>
+                        <fieldset id='fsDragging' class='fieldsetRadio flexCol'>
+                            <legend>Dragging behaviour</legend>
+                            <div class='fieldsetRadioSub'>
 
-                    <textarea id='items'></textarea>
-                    <h3 class='smallHeading'
-                        title="Optionally add names for the groups. More than the number of groups is fine. Less than the number of groups results in the remainder being called Group 1, Group 2, etc.">
-                        Custom group names</h3>
-                    <div id='groupNameContols' class='itemControls flexRow'>
+                                <input type="radio" name="radioDragging" id="draggingMove"><label for="draggingMove">Move
+                                one item</label>
+                            </div>
+                            <div class='fieldsetRadioSub'>
 
-                        <button id='sortGroupNamesRandom' class='buttonBase buttonEffects'
-                                title="Randomize custom group name order"><i class="fa-solid fa-dice"></i></button>
-                        <button id='clearGroupNames' class='buttonBase buttonEffects' title="Clear custom group names">
-                            <i class="fa-solid fa-trash"></i></button>
+                                <input type="radio" name="radioDragging" id="draggingSwap"><label for="draggingSwap">Swap
+                                two items</label>
+                            </div>
+                        </fieldset>
+                        <fieldset id='fsView' class='fieldsetRadio flexCol'>
+                            <legend>View</legend>
+                            <div class='fieldsetRadioSub'>
+
+                                <input type="radio" name="radioView" id="viewGroups"><label
+                                    for="viewGroups">Groups</label>
+                            </div>
+                            <div class='fieldsetRadioSub'>
+
+                                <input type="radio" name="radioView" id="viewSeatingPlan"><label
+                                    for="viewSeatingPlan">Seating plan</label>
+                            </div>
+                            <div class='fieldsetRadioSub'>
+
+                                <input type="radio" name="radioView" id="viewSeatingEditor"><label
+                                    for="viewSeatingEditor">Seating editor</label>
+                            </div>
+
+                        </fieldset>
                     </div>
-                    <textarea id='groupNames'
-                              title="Optionally add names for the groups. More than the number of groups is fine. Less than the number of groups results in the remainder being called Group 1, Group 2, etc."></textarea>
                 </div>
                 <div id='parametersPanel' class='flexCol subPanel hideScrollbar'>
-                    <h2>Parameters</h2>
-                    <div id='parameterFieldsets' class='flexCol'>
-
-                        <fieldset id='groupParameters' class='flexCol'>
+                    <h2>Group settings</h2>
+                    <div class='fieldsetColumn flexCol'>
+                        <fieldset id='fsGroupDistribution' class='flexCol'>
                             <legend>Number & size</legend>
                             <div class='parameterUnit flexRow'>
                                 <label id='labelNItems' for='reportNItems' class='parameterLabel flexRow'>
@@ -86,7 +113,7 @@
 
                             </div>
                         </fieldset>
-                        <fieldset id='balancingParameters' class='fieldsetRadio flexCol'>
+                        <fieldset id='fsBalancing' class='fieldsetRadio flexCol'>
                             <legend>Balancing leftovers</legend>
                             <div class='fieldsetRadioSub'>
 
@@ -100,21 +127,21 @@
                             </div>
 
                         </fieldset>
-                        <fieldset id='draggingParameters' class='fieldsetRadio flexCol'>
-                            <legend>Dragging behaviour</legend>
-                            <div class='fieldsetRadioSub'>
+                        <fieldset id="fsCustomGroupNames" class="flexCol">
+                            <legend>Custom group names</legend>
+                            <div id='groupNameControls' class='itemControls flexRow'>
 
-                                <input type="radio" name="radioDragging" id="draggingMove"><label for="draggingMove">Dragging
-                                moves one item</label>
+                                <button id='sortGroupNamesRandom' class='buttonBase buttonEffects'
+                                        title="Randomize custom group name order"><i class="fa-solid fa-dice"></i>
+                                </button>
+                                <button id='clearGroupNames' class='buttonBase buttonEffects'
+                                        title="Clear custom group names">
+                                    <i class="fa-solid fa-trash"></i></button>
                             </div>
-                            <div class='fieldsetRadioSub'>
-
-                                <input type="radio" name="radioDragging" id="draggingSwap"><label for="draggingSwap">Dragging
-                                swaps two items</label>
-                            </div>
+                            <textarea id='groupNames'
+                                      title="Optionally add names for the groups. More than the number of groups is fine. Less than the number of groups results in the remainder being called Group 1, Group 2, etc."></textarea>
                         </fieldset>
                     </div>
-
                 </div>
                 <div id='groupsPanel' class='flexCol subPanel '>
                     <h2>Groups</h2>
@@ -132,20 +159,20 @@
                                 title="Make groups by sorting the items alphabetically in reverse">ZA
                         </button>
 
-<!--                        <button id='transformGroupsJigsaw' class='buttonBase buttonEffects'-->
-<!--                                title="Make groups by inverting current group # so that each new group has 1 member of each old group">-->
-<!--                            Jigsaw-->
-<!--                        </button>-->
+                        <!--                        <button id='transformGroupsJigsaw' class='buttonBase buttonEffects'-->
+                        <!--                                title="Make groups by inverting current group # so that each new group has 1 member of each old group">-->
+                        <!--                            Jigsaw-->
+                        <!--                        </button>-->
                         <button id='clearGroups' class='buttonBase buttonEffects'><i class="fa-solid fa-trash"
                                                                                      title="Clear"></i></button>
                     </div>
-<!--                    <div id='groupControls2' class='groupControls flexRow'>-->
+                    <!--                    <div id='groupControls2' class='groupControls flexRow'>-->
 
-<!--                        <button id='undoGroupChange' class='buttonBase buttonEffects' title="Undo"><i-->
-<!--                                class="fa-solid fa-arrow-rotate-left"></i></button>-->
-<!--                        <button id='redoGroupChange' class='buttonBase buttonEffects' title="Redo"><i-->
-<!--                                class="fa-solid fa-arrow-rotate-right"></i></button>-->
-<!--                    </div>-->
+                    <!--                        <button id='undoGroupChange' class='buttonBase buttonEffects' title="Undo"><i-->
+                    <!--                                class="fa-solid fa-arrow-rotate-left"></i></button>-->
+                    <!--                        <button id='redoGroupChange' class='buttonBase buttonEffects' title="Redo"><i-->
+                    <!--                                class="fa-solid fa-arrow-rotate-right"></i></button>-->
+                    <!--                    </div>-->
                     <div id='groups' class='flexRow hideScrollbar'></div>
 
                 </div>
@@ -190,20 +217,20 @@
                                     Items</label>
                             </div>
                             <div class='shareOptionContainer flexColCenter'
-                                 title='Include custom group names in share URL'>
-                                <label for='shareGroupNames' class='shareLabel'>
-                                    <input type='checkbox' class='shareIncludeLabel' id='shareGroupNames'
-                                           checked='true'/>
-                                    <span class='checkmark'></span>
-                                    Group names</label>
-                            </div>
-                            <div class='shareOptionContainer flexColCenter'
                                  title='Include parameter values in share URL'>
                                 <label for='shareParameters' class='shareLabel'>
                                     <input type='checkbox' class='shareIncludeLabel' id='shareParameters'
                                            checked='true'/>
                                     <span class='checkmark'></span>
                                     Parameters</label>
+                            </div>
+                            <div class='shareOptionContainer flexColCenter'
+                                 title='Include custom group names in share URL'>
+                                <label for='shareGroupNames' class='shareLabel'>
+                                    <input type='checkbox' class='shareIncludeLabel' id='shareGroupNames'
+                                           checked='true'/>
+                                    <span class='checkmark'></span>
+                                    Group names</label>
                             </div>
                             <div class='shareOptionContainer flexColCenter'
                                  title='Include current group distribution in share URL (items must also be shared)'>
@@ -214,10 +241,9 @@
                             </div>
                             <div id='shareURLContainer' class='footerBlockInner shareInputContainer'><input
                                     id='shareURL' class='shareInput' readonly='true'></div>
-                            <div id='shareButtonContainer' class='footerBlockInner shareButtonContainer'></div>
-                        </div>
-                        <div id='shareCopyPingContainer' class='flexColCenter'>
-                            <div id='copyPingNotification'>Copied!</div>
+                            <div id='shareButtonContainer' class='footerBlockInner shareButtonContainer'>
+                                <button id="btnCopyShareURL" class="buttonBase buttonEffects">Copy</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -238,6 +264,7 @@
 <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js'></script>
 <script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.6/Sortable.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js'></script>
 
 <script src='https://g.sawczak.com/web-tools/js/toolbox.js'></script>
 <script src='https://g.sawczak.com/web-tools/js/link-io.js'></script>

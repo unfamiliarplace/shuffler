@@ -261,25 +261,29 @@ input[disabled=""] {
 #focusPanel {
   justify-content: space-around;
 }
+#parametersPanel {
+  /*   flex-shrink: 1; */
+  /*border-left: 1px solid #fff;*/
+  /*border-right: 1px solid #fff;*/
+}
 
 #itemsPanel, #parametersPanel {
 /*   flex-shrink: 1; */
-  border-right: 1px solid #fff;
-  height: 516px;
+  height: 100%;
   overflow-y: scroll;
 }
 
 #itemsPanel {
-  width: 200px;
+  width: 250px;
 }
 
 #parametersPanel {
-  width: 300px;
+  width: 250px;
 }
 
 #groupsPanel {
 /*   flex-grow: 1; */
-  width: calc(100% - 450px);
+  width: calc(100% - 500px);
 }
 
 #itemsPanel.hideSide, #parametersPanel.hideSide {
@@ -323,11 +327,7 @@ input[disabled=""] {
 
 #groupNames {
 /*   height: 20%; */
-  height: 95px;
-}
-
-#parameterFieldsets {
-  gap: 20px;
+  height: 115px;
 }
 
 .parameterUnit {
@@ -335,7 +335,11 @@ input[disabled=""] {
   margin: 10px auto 15px auto;
 }
 
-#parameterFieldsets:last-child {
+.fieldsetColumn {
+  gap: 20px;
+}
+
+.fieldsetColumn:last-child {
   margin-bottom: 0;
 }
 
@@ -349,7 +353,12 @@ input[disabled=""] {
 
 .itemControls, .groupControls {
   gap: 10px;
-  margin-bottom: 20px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+fieldset textarea {
+  margin-top: 5px;
 }
 
 .itemControls button, .groupControls button {
