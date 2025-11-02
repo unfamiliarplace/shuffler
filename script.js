@@ -397,20 +397,28 @@ const handleDrop = (evt) => {
 
 const handleToggleShowSide = () => {
   if (app.optShowSide.value()) {
-    $('#itemsPanel').removeClass('hideSide');
-    $('#parametersPanel').removeClass('hideSide');
-    $('#groupsPanel').removeClass('hideSide');
+    $('#focusSection1').removeClass('hideSide');
+    $('#focusSection2').removeClass('hideSide');
   } else {
-    $('#itemsPanel').addClass('hideSide');
-    $('#parametersPanel').addClass('hideSide');
-    $('#groupsPanel').addClass('hideSide');
+    $('#focusSection1').addClass('hideSide');
+    $('#focusSection2').addClass('hideSide');
   }
 
   updateShareURL();
 }
 
-const handleToggleView = () => {
-
+const handleUpdateView = () => {
+  switch (app.optShowView.value()) {
+    case "viewGroups":
+      view.show("groups");
+      break;
+    case "viewSeatingPlan":
+      view.show("seatingPlan");
+      break;
+    case "viewSeatingEditor":
+      view.show("seatingEditor");
+      break;
+  }
 }
 
 const handleKeyup = (e) => {
@@ -485,12 +493,13 @@ const bind = () => {
 
   app.optShareItems.change(updateButtonStates);
   app.optShareItems.change(updateShareURL);
+  app.optShareView.change(updateShareURL);
   app.optShareGroupNames.change(updateShareURL);
   app.optShareGroupSettings.change(updateShareURL);
   app.optShareGroups.change(updateShareURL);
 
   app.optShowSide.change(handleToggleShowSide);
-  app.optShowView.change(handleToggleView);
+  app.optShowView.change(handleUpdateView);
 };
 
 const createOptions = () => {
@@ -500,6 +509,7 @@ const createOptions = () => {
   app.optDraggingBehaviour = new OptionRadio($('input[name="radioDragging"]'));
 
   app.optShareItems = new OptionCheckbox($("#shareItems"));
+  app.optShareView = new OptionCheckbox($("#shareView"));
   app.optShareGroupSettings = new OptionCheckbox($("#shareGroupSettings"));
   app.optShareGroupNames = new OptionCheckbox($("#shareGroupNames"));
   app.optShareGroups = new OptionCheckbox($("#shareGroups"));
@@ -518,6 +528,7 @@ const setOptionDefaults = () => {
   app.optDraggingBehaviour.value("draggingMove");
 
   app.optShareItems.value(true);
+  app.optShareView.value(false);
   app.optShareGroupNames.value(false);
   app.optShareGroupSettings.value(false);
   app.optShareGroups.value(false);
@@ -531,36 +542,54 @@ const setOptionDefaults = () => {
 const packShareData = () => {
   let d = {};
 
-  // d['i'] = lio.compress(getItems().join('_'));
-  // d['a'] = lio.compress(getGroupNames().join('_'));
-
+  // Items
   if ((!app.optShareItems.isDisabled()) && app.optShareItems.value()) {
     d["i"] = getItems().join("_");
   }
 
+  // TODO could perhaps map this (in which case it could be used for unpacking too)
+  // View settings
+  if ((!app.optShareView.isDisabled()) && app.optShareView.value()) {
+    d["v"] = "";
+
+    d["v"] += JSTools.boolToInt(
+        app.optDraggingBehaviour.value() !== "draggingMove"
+    );
+
+    switch (app.optShowView.value()) {
+      case "viewGroups":
+        d["v"] += "0";
+        break;
+      case "viewSeatingPlan":
+        d["v"] += "1";
+        break;
+      case "viewSeatingEditor":
+        d["v"] += "2";
+        break;
+    }
+
+    d["v"] += JSTools.boolToInt(
+        app.optShowSide.value()
+    );
+  }
+
+  // Group settings
+  if ((!app.optShareGroupSettings.isDisabled()) && app.optShareGroupSettings.value()) {
+    d["n"] = "";
+
+    d["n"] += app.optNGroups.value();
+    d["n"] += "_";
+    d["n"] += JSTools.boolToInt(
+        app.optBalanceLeftovers.value() !== "leftoversDistribute"
+    );
+  }
+
+  // Group names
   if ((!app.optShareGroupNames.isDisabled()) && app.optShareGroupNames.value()) {
     d["a"] = getGroupNames().join("_");
   }
 
-  if ((!app.optShareGroupSettings.isDisabled()) && app.optShareGroupSettings.value()) {
-    d["n"] = app.optNGroups.value();
-
-    d["o"] = "";
-
-    // 0 = default, 1 = alternative
-    // TODO could perhaps map this (in which case it could be used for unpacking too)
-
-    d["o"] += JSTools.boolToInt(
-      app.optBalanceLeftovers.value() !== "leftoversDistribute"
-    );
-    d["o"] += JSTools.boolToInt(
-      app.optDraggingBehaviour.value() !== "draggingMove"
-    );
-    d["o"] += JSTools.boolToInt(
-      app.optShowSide.value()
-    );
-  }
-
+  // Groups
   if ((!app.optShareGroups.isDisabled()) && app.optShareGroups.value()) {
     let items = getItems();
     let groups = [];
@@ -582,46 +611,75 @@ const packShareData = () => {
 
 const unpackShareData = d => {
 
+  // Items
   if ('i' in d) {
     app.optShareItems.value(true);
     setItems(d['i'].split('_'));
   }
 
+  // View settings
+  if ('v' in d) {
+    app.optShareView.value(true);
+
+    switch (d['v'][0]) {
+      case "0":
+        app.optDraggingBehaviour.value('draggingMove');
+        break;
+      case "1":
+        app.optDraggingBehaviour.value('draggingSwap');
+        break;
+    }
+
+    switch (d['v'][1]) {
+      case "0":
+        app.optShowView.value('viewGroups');
+        break;
+      case "1":
+        app.optShowView.value('viewSeatingPlan');
+        break;
+      case "2":
+        app.optShowView.value('viewSeatingEditor');
+        break;
+    }
+    handleUpdateView();
+
+    switch (d['v'][2]) {
+      case "0":
+        app.optShowSide.value(false);
+        break;
+      case "1":
+        app.optShowSide.value(true);
+        break;
+    }
+    handleToggleShowSide();
+  }
+
+  // Group settings
+  if ('n' in d) {
+    app.optShareGroupSettings.value(true);
+
+    let groupSettings = d['n'].split('_');
+
+    app.optNGroups.value(parseInt(groupSettings[0]));
+
+    switch (groupSettings[1]) {
+      case "0":
+        app.optBalanceLeftovers.value('leftoversDistribute');
+        break;
+      case "1":
+        app.optBalanceLeftovers.value('leftoversCollect');
+        break;
+    }
+    handleNGroupsUpdate();
+  }
+
+  // Group names
   if ('a' in d) {
     app.optShareGroupNames.value(true);
     setGroupNames(d['a'].split('_'));
   }
 
-  if ('n' in d) {
-    app.optShareGroupSettings.value(true);
-    app.optNGroups.value(parseInt(d['n']));
-    handleNGroupsUpdate();
-  }
-
-  if ('o' in d) {
-    app.optShareGroupSettings.value(true);
-
-    // TODO map?
-    if (d['o'][0] === '0') {
-      app.optBalanceLeftovers.value('leftoversDistribute');
-    } else if (d['o'][0] === '1') {
-      app.optBalanceLeftovers.value('leftoversCollect');
-    }
-
-        if (d['o'][1] === '0') {
-      app.optDraggingBehaviour.value('draggingMove');
-    } else if (d['o'][1] === '1') {
-      app.optDraggingBehaviour.value('draggingSwap');
-    }
-
-        if (d['o'][2] === '0') {
-      app.optShowSide.value(false);
-    } else if (d['o'][2] === '1') {
-      app.optShowSide.value(true);
-    }
-    handleToggleShowSide();
-  }
-
+  // Groups
   if ('g' in d) {
     app.optShareGroups.value(true);
 
@@ -652,20 +710,25 @@ const unpackShareData = d => {
 };
 
 const shareDataIsDefault = () => {
-  let paramsAreDefault = [
-    app.optNGroups.value() === 3,
-    app.optNPerGroup.value() === 2,
-    app.optBalanceLeftovers.value() === 'leftoversDistribute',
+  let viewSettingsAreDefault = [
+    app.optShowView.value() === 'viewGroups',
     app.optDraggingBehaviour.value() === 'draggingMove',
     app.optShowSide.value(),
   ].every(Boolean);
 
+  let groupSettingsAreDefault = [
+    app.optNGroups.value() === 3,
+    app.optNPerGroup.value() === 2,
+    app.optBalanceLeftovers.value() === 'leftoversDistribute',
+  ].every(Boolean);
+
   return [
     app.groups.every(g => g.length === 0),
-    (! app.optShareGroupSettings.value() || paramsAreDefault),
+    (! app.optShareView.value() || viewSettingsAreDefault),
+    (! app.optShareGroupSettings.value() || groupSettingsAreDefault),
     (! app.optShareItems.value() || (JSON.stringify(getItems()) === JSON.stringify(defaultItems))),
     (! app.optShareGroupNames.value() || (JSON.stringify(getGroupNames()) === JSON.stringify(defaultGroupNames))),
-    (! app.optShareGroups.value() || (! app.groupsPopulated))
+    (! app.optShareGroups.value() || (! app.groupsPopulated)),
   ].every(Boolean);
 };
 
@@ -694,6 +757,15 @@ const initialize = () => {
   ]);
   stage.setDefault("game");
   stage.show("game");
+
+  view = new Stage();
+  view.createScenes([
+    {name: "groups", panelSelector: ".groupsViewComponent"},
+    {name: "seatingPlan", panelSelector: ".seatingPlanViewComponent"},
+    {name: "seatingEditor", panelSelector: ".seatingEditorViewComponent"},
+  ]);
+  view.setDefault("groups");
+  view.show("groups");
 
   createOptions();
   bind();
@@ -746,5 +818,6 @@ class App {
 
 let copyToast;
 var stage;
+var view;
 var app;
 $(document).ready(initialize);

@@ -261,36 +261,37 @@ input[disabled=""] {
 #focusPanel {
   justify-content: space-around;
 }
-#parametersPanel {
+
+#focusSection2 {
   /*   flex-shrink: 1; */
   /*border-left: 1px solid #fff;*/
   /*border-right: 1px solid #fff;*/
 }
 
-#itemsPanel, #parametersPanel {
+#focusSection1, #focusSection2 {
 /*   flex-shrink: 1; */
   height: 100%;
   overflow-y: scroll;
 }
 
-#itemsPanel {
+#focusSection1 {
   width: 250px;
 }
 
-#parametersPanel {
+#focusSection2 {
   width: 250px;
 }
 
-#groupsPanel {
+#focusSection3 {
 /*   flex-grow: 1; */
   width: calc(100% - 500px);
 }
 
-#itemsPanel.hideSide, #parametersPanel.hideSide {
+#focusSection1.hideSide, #focusSection2.hideSide {
   display: none;
 }
 
-#groupsPanel.hideSide {
+#focusSection3.hideSide {
   width: 100%;
 }
 
