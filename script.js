@@ -409,6 +409,10 @@ const handleToggleShowSide = () => {
   updateShareURL();
 }
 
+const handleToggleView = () => {
+
+}
+
 const handleKeyup = (e) => {
   if ($("#items").is(":focus")) {
     handleItemsUpdate();
@@ -482,10 +486,11 @@ const bind = () => {
   app.optShareItems.change(updateButtonStates);
   app.optShareItems.change(updateShareURL);
   app.optShareGroupNames.change(updateShareURL);
-  app.optShareParameters.change(updateShareURL);
+  app.optShareGroupSettings.change(updateShareURL);
   app.optShareGroups.change(updateShareURL);
 
   app.optShowSide.change(handleToggleShowSide);
+  app.optShowView.change(handleToggleView);
 };
 
 const createOptions = () => {
@@ -495,11 +500,12 @@ const createOptions = () => {
   app.optDraggingBehaviour = new OptionRadio($('input[name="radioDragging"]'));
 
   app.optShareItems = new OptionCheckbox($("#shareItems"));
+  app.optShareGroupSettings = new OptionCheckbox($("#shareGroupSettings"));
   app.optShareGroupNames = new OptionCheckbox($("#shareGroupNames"));
-  app.optShareParameters = new OptionCheckbox($("#shareParameters"));
   app.optShareGroups = new OptionCheckbox($("#shareGroups"));
 
   app.optShowSide = new OptionCheckbox($("#showSide"));
+  app.optShowView = new OptionRadio($('input[name=radioView]'));
 };
 
 const setOptionDefaults = () => {
@@ -513,10 +519,11 @@ const setOptionDefaults = () => {
 
   app.optShareItems.value(true);
   app.optShareGroupNames.value(false);
-  app.optShareParameters.value(false);
+  app.optShareGroupSettings.value(false);
   app.optShareGroups.value(false);
 
   app.optShowSide.value(true);
+  app.optShowView.value("viewGroups");
 };
 
 // link stuff
@@ -535,7 +542,7 @@ const packShareData = () => {
     d["a"] = getGroupNames().join("_");
   }
 
-  if ((!app.optShareParameters.isDisabled()) && app.optShareParameters.value()) {
+  if ((!app.optShareGroupSettings.isDisabled()) && app.optShareGroupSettings.value()) {
     d["n"] = app.optNGroups.value();
 
     d["o"] = "";
@@ -586,13 +593,13 @@ const unpackShareData = d => {
   }
 
   if ('n' in d) {
-    app.optShareParameters.value(true);
+    app.optShareGroupSettings.value(true);
     app.optNGroups.value(parseInt(d['n']));
     handleNGroupsUpdate();
   }
 
   if ('o' in d) {
-    app.optShareParameters.value(true);
+    app.optShareGroupSettings.value(true);
 
     // TODO map?
     if (d['o'][0] === '0') {
@@ -655,7 +662,7 @@ const shareDataIsDefault = () => {
 
   return [
     app.groups.every(g => g.length === 0),
-    (! app.optShareParameters.value() || paramsAreDefault),
+    (! app.optShareGroupSettings.value() || paramsAreDefault),
     (! app.optShareItems.value() || (JSON.stringify(getItems()) === JSON.stringify(defaultItems))),
     (! app.optShareGroupNames.value() || (JSON.stringify(getGroupNames()) === JSON.stringify(defaultGroupNames))),
     (! app.optShareGroups.value() || (! app.groupsPopulated))
@@ -707,10 +714,11 @@ class App {
 
   optShareItems;
   optShareGroupNames;
-  optShareParameters;
+  optShareGroupSettings;
   optShareGroups;
 
   optShowSide;
+  optView;
 
   groups;
   sortables;
@@ -723,11 +731,12 @@ class App {
     this.optDraggingBehaviour = null;
 
     this.optShareItems = null;
+    this.optShareGroupSettings = null;
     this.optShareGroupNames = null;
-    this.optShareParameters = null;
     this.optShareGroups = null;
 
     this.optShowSide = null;
+    this.optView = null;
 
     this.groups = [];
     this.sortables = [];
