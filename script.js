@@ -255,6 +255,7 @@ const makeSortables = () => {
   for (let el of document.getElementsByClassName("groupItems")) {
     app.sortables.push(
       Sortable.create(el, {
+        ghostClass: 'ghostDrop',
         swapThreshold: 1,
         animation: 50,
         group: "groups",
